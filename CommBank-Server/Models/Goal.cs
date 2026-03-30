@@ -1,30 +1,35 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+const mongoose = require('mongoose');
 
-namespace CommBank.Models;
+// Define the Goal Schema based on the provided technical models 
+const goalSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true // Based on source [cite: 7, 8]
+  },
+  targetAmount: {
+    type: Number,
+    required: true // Based on source [cite: 9, 11]
+  },
+  targetDate: {
+    type: Date,
+    required: true // Based on source [cite: 12, 15]
+  },
+  balance: {
+    type: Number,
+    default: 0 // Based on source [cite: 17, 18]
+  },
+  // This is the specific modification requested by the task
+  icon: {
+    type: String,
+    required: false // Optional public field as per task instructions
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true // Links to the User table [cite: 1, 31]
+  }
+}, {
+  timestamps: true // Standard practice for tracking creation/updates
+});
 
-public class Goal
-{
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string? Id { get; set; }
-
-    public string? Name { get; set; }
-
-    public UInt64 TargetAmount { get; set; } = 0;
-
-    public DateTime TargetDate { get; set; }
-
-    public double Balance { get; set; } = 0.00;
-
-    public DateTime Created { get; set; } = DateTime.Now;
-
-    [BsonRepresentation(BsonType.ObjectId)]
-    public List<string>? TransactionIds { get; set; }
-
-    [BsonRepresentation(BsonType.ObjectId)]
-    public List<string>? TagIds { get; set; }
-
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string? UserId { get; set; }
-}
+module.exports = mongoose.model('Goal', goalSchema);
